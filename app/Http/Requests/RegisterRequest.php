@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
@@ -11,7 +12,8 @@ class RegisterRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+       // return false;
+       return true;
     }
 
     /**
@@ -22,7 +24,15 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=> 'required|string|max:150',
+            'email'=> 'required|email|max:150|unique:users',
+            'password'=> 'required|confirmed'
         ];
+    }
+    public function getData()
+    {
+        $data = $this->validated();
+        $data['password'] = Hash::make($data['password']);
+        return $data;
     }
 }
